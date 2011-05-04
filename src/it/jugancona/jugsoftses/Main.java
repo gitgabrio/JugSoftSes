@@ -96,7 +96,7 @@ public class Main extends Activity {
 		startServerButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Intent i = new Intent(context, Server.class);
+				Intent i = new Intent(context, ServerView.class);
 				context.startActivity(i);
 			}
 			

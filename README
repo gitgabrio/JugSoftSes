@@ -1,0 +1,18 @@
+Demo application for the JUGAncona
+
+It consist of two activity, a plain old tcp server, and a tcp client.
+
+The main view holds two button: the first one open a "Choose contact" dialog, while the second one open the ServerView activity.
+The ServerView activity has an handler and, at the onCreate method, set up the server class, giving it its Handler; then, start the server thread.
+When the server receives some text from a connection, it send it back to the ServerView activity, using the handler.
+Last, when the application is at the Main activity, flipping it (horizontal or vertical) will create a connection to the server running on another device
+and will send it the current orientation.
+
+About setting up:
+
+1) start the first emulator, and put the application in server mode
+2) telnet the first emulator, and setup redir:
+	redir add tcp:12345:12345
+3) start the second emulator, and simulate rotation with CTRL+F12 (Fn+CMD+F12 on Mac).
+
+That's all, folks!

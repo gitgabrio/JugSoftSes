@@ -3,37 +3,62 @@
  */
 package it.jugancona.jugsoftses.communication;
 
+
 import java.io.*;
 import java.net.*;
-import android.app.Activity;
+
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
-import android.widget.TextView;
 
-public class Server extends Activity {
+public class Server extends Thread {
 	private static final String TAG = "Server";
+	final static int RECEIVED = 1;
+	
+	private Handler mHandler;
+	
+	
 
-	/** Called when the activity is first created. */
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		String res = "FAIL";
-		Log.i(TAG, "onCreate");
+	/**
+	 * @param mHandler the mHandler to set
+	 */
+	public void setmHandler(Handler mHandler) {
+		this.mHandler = mHandler;
+	}
+
+	public void run() {
 		try {
 			ServerSocket ss = new ServerSocket(12345);
-			Log.i(TAG, "S: Server started: " + ss.getInetAddress().getHostAddress() + ":" + ss.getLocalPort());
-			Socket s = ss.accept();
-			Log.i(TAG, "S: Client connected" + s.toString());
-			PrintWriter out = new PrintWriter(s.getOutputStream(), true);
-			BufferedReader in = new BufferedReader(new InputStreamReader(
-					s.getInputStream()));
-			res = in.readLine();
-			out.println("PONG" + res);
+			Log.i(TAG,
+					"S: Server started: "
+							+ ss.getInetAddress().getHostAddress() + ":"
+							+ ss.getLocalPort());
+			String res = "FAIL";
+			while (true) {
+				Socket s = ss.accept();
+				Log.i(TAG, "S: Client connected" + s.toString());
+				PrintWriter out = new PrintWriter(s.getOutputStream(), true);
+				BufferedReader in = new BufferedReader(new InputStreamReader(
+						s.getInputStream()));
+				res = in.readLine();
+				out.println("PONG" + res);
+				out.close();
+				in.close();
+				sendReceived(res);
+			}
 		} catch (IOException e) {
 			Log.e(TAG, e.getMessage(), e);
 		}
-		TextView tv = new TextView(this);
-		tv.setText("S: " + res);
-		setContentView(tv);
 	}
+	
+	private void sendReceived(String received) {
+		Message msg = mHandler.obtainMessage();
+		Bundle b = new Bundle();
+		b.putString("received", received);
+		msg.setData(b);
+		msg.what = RECEIVED;
+		mHandler.sendMessage(msg);
+	}
+
 }
