@@ -6,6 +6,7 @@ package it.jugancona.jugsoftses.communication;
 
 import java.io.*;
 import java.net.*;
+import java.util.Enumeration;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -30,11 +31,12 @@ public class Server extends Thread {
 	public void run() {
 		try {
 			ServerSocket ss = new ServerSocket(12345);
-			Log.i(TAG,
-					"S: Server started: "
-							+ ss.getInetAddress().getHostAddress() + ":"
-							+ ss.getLocalPort());
-			String res = "FAIL";
+			String localIp = getLocalIpAddress(); 
+			String res = "S: Server started: "
+				+ localIp + ":"
+				+ ss.getLocalPort();
+			Log.i(TAG, res);
+			sendReceived(res);
 			while (true) {
 				Socket s = ss.accept();
 				Log.i(TAG, "S: Client connected" + s.toString());
@@ -48,7 +50,9 @@ public class Server extends Thread {
 				sendReceived(res);
 			}
 		} catch (IOException e) {
+			String res = "FAIL: " + e.getMessage();
 			Log.e(TAG, e.getMessage(), e);
+			sendReceived(res);
 		}
 	}
 	
@@ -59,6 +63,23 @@ public class Server extends Thread {
 		msg.setData(b);
 		msg.what = RECEIVED;
 		mHandler.sendMessage(msg);
+	}
+	
+	private String getLocalIpAddress() {
+	    try {
+	        for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements();) {
+	            NetworkInterface intf = en.nextElement();
+	            for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements();) {
+	                InetAddress inetAddress = enumIpAddr.nextElement();
+	                if (!inetAddress.isLoopbackAddress()) {
+	                    return inetAddress.getHostAddress().toString();
+	                }
+	            }
+	        }
+	    } catch (SocketException ex) {
+	        Log.e(TAG, ex.toString());
+	    }
+	    return null;
 	}
 
 }

@@ -16,6 +16,7 @@ import android.widget.EditText;
 
 public class ServerView extends Activity {
 	private static final String TAG = "ServerView";
+	private Server server = null;
 	private EditText et;
 	
 	// Define the Handler that receives messages from the thread and update the
@@ -41,10 +42,12 @@ public class ServerView extends Activity {
 		et = (EditText) findViewById(R.id.ServerEditText);
 		Log.i(TAG, "onCreate");
 		et.setText("Setting up Server...");
-		Server server = new Server();
+		if (server == null ) {
+		server = new Server();
 		server.setmHandler(handler);
 		et.setText("Starting up Server...");
 		server.start();
+		}
 		et.setText("S: waiting...");
 	}
 }

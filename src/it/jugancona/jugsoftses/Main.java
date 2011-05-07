@@ -15,6 +15,8 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
 
 /**
  * Main.java generated 03/mag/2011
@@ -33,6 +35,8 @@ public class Main extends Activity {
 	private int orientation = 0;
 	private Button openPickerButton;
 	private Button startServerButton;
+	private CheckBox sendOrientationCheckBox;
+	private EditText companionIpEditText;
 	private Uri contact = null;
 	private Context context = this;
 
@@ -69,8 +73,10 @@ public class Main extends Activity {
 				break;
 			}
 			Log.i(TAG, "Current orientation: " + orientationDescription);
-			String res = Client.sendMessage(orientationDescription);
-			Log.i(TAG, "Server response: " + res);
+			if (isSendable()) {
+				String res = Client.sendMessage(companionIpEditText.getText().toString(), orientationDescription);
+				Log.i(TAG, "Server response: " + res);
+			}
 		}
 	}
 
@@ -99,8 +105,10 @@ public class Main extends Activity {
 				Intent i = new Intent(context, ServerView.class);
 				context.startActivity(i);
 			}
-			
+
 		});
+		sendOrientationCheckBox = (CheckBox) findViewById(R.id.ChkBxListenOrientation);
+		companionIpEditText = (EditText) findViewById(R.id.EdtTxtCompanionIP);
 	}
 
 	/*
@@ -120,5 +128,16 @@ public class Main extends Activity {
 		}
 	}
 	
+	private boolean isSendable() {
+		return sendOrientationCheckBox.isChecked();
+		// TODO implement companion ip address check
+//		boolean toReturn = false;
+//		if (!sendOrientationCheckBox.isChecked()) {
+//			return toReturn;
+//		}
+//		
+//		
+//		return toReturn;
+	}
 
 }

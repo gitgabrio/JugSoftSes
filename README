@@ -1,6 +1,6 @@
 Demo application for the JUGAncona
 
-It consist of two activity, a plain old tcp server, and a tcp client.
+It consist of two activities, a plain old tcp server, and a tcp client.
 
 The main view holds two button: the first one open a "Choose contact" dialog, while the second one open the ServerView activity.
 The ServerView activity has an handler and, at the onCreate method, set up the server class, giving it its Handler; then, start the server thread.

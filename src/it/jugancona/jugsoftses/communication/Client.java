@@ -27,10 +27,10 @@ public class Client {
 	
 	private static final String TAG = "Client";
 
-	public static String sendMessage(String toSend) {
+	public static String sendMessage(String remoteIp, String toSend) {
 		String toReturn = "FAIL";
 		try {
-			Socket s = new Socket("10.0.2.2", 12345);
+			Socket s = new Socket(remoteIp, 12345);
 			Log.i(TAG, "C: Connected to server" + s.toString());
         	PrintWriter out = new PrintWriter(s.getOutputStream(), true);
         	BufferedReader in = new BufferedReader(new InputStreamReader(s.getInputStream()));
