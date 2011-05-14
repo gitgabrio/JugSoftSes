@@ -3,10 +3,7 @@
  */
 package it.jugancona.jugsoftses;
 
-import it.jugancona.jugsoftses.R;
 import it.jugancona.jugsoftses.communication.Server;
-
-
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
@@ -18,7 +15,7 @@ public class ServerView extends Activity {
 	private static final String TAG = "ServerView";
 	private Server server = null;
 	private EditText et;
-	
+
 	// Define the Handler that receives messages from the thread and update the
 	// progress
 	final Handler handler = new Handler() {
@@ -37,17 +34,65 @@ public class ServerView extends Activity {
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
+		Log.i(TAG, "onCreate");
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.server);
 		et = (EditText) findViewById(R.id.ServerEditText);
 		Log.i(TAG, "onCreate");
-		et.setText("Setting up Server...");
-		if (server == null ) {
-		server = new Server();
-		server.setmHandler(handler);
-		et.setText("Starting up Server...");
-		server.start();
+		et.setText("onCreate...");
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see android.app.Activity#onResume()
+	 */
+	@Override
+	protected void onResume() {
+		Log.i(TAG, "onResume");
+		super.onResume();
+		String toSet = "onResume\r\nSetting up Server...";
+		et.setText(toSet);
+		if (server == null) {
+			server = new Server();
+			server.setmHandler(handler);
+			et.setText("Starting up Server...");
+			server.start();
 		}
 		et.setText("S: waiting...");
 	}
+	
+	
+
+	/* (non-Javadoc)
+	 * @see android.app.Activity#onPause()
+	 */
+	@Override
+	protected void onPause() {
+		Log.i(TAG, "onPause");
+		super.onPause();
+		if (server != null) {
+			server.setRunnable(false);
+			server = null;
+			Log.i(TAG, "Is server null ? " + (server == null));
+		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see android.app.Activity#onStop()
+	 */
+	@Override
+	protected void onStop() {
+		Log.i(TAG, "onStop");
+		super.onStop();
+		if (server != null) {
+			server.setRunnable(false);
+			server = null;
+			Log.i(TAG, "Is server null ? " + (server == null));
+		}
+	}
+
+	
 }
